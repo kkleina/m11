@@ -1,0 +1,21 @@
+.container {
+  font-family: sans-serif;
+  line-height: 2;
+  margin: 0 auto;
+  max-width: 800px;
+  text-align: center;
+}
+
+.row {
+  display: flex;
+}
+
+.row:first-of-type,
+.col:first-of-type {
+  font-weight: 700;
+}
+
+.col {
+  border: 1px solid #555;
+  flex: 1;
+}
