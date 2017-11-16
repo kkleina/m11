@@ -19,3 +19,18 @@
   border: 1px solid #555;
   flex: 1;
 }
+
+button {
+  background: orange;
+  border: 5px solid darkorange;
+  color: #fff;
+  display: block;
+  font-size: 3em;
+  margin: 100px auto;
+  padding: 20px 50px;
+}
+
+button:hover {
+  background: darkorange;
+  cursor: pointer;
+}
