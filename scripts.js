@@ -1,56 +1,179 @@
 $(function() {
 
-  function Phone(brand, price, color, resolution) {
-    this.brand = brand;
-    this.price = price;
-    this.color = color;
-    this.resolution = resolution;
+  function randomString() {
+    var chars = '0123456789abcdefghiklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXTZ';
+    var str = '';
+    for (var i = 0; i < 10; i++) {
+        str += chars[Math.floor(Math.random() * chars.length)];
+    }
+    return str;
   }
 
-  var main = $("main");
-  main.append("<div id='brand' class='row'><div class='col'>Brand</div></div>");
-  main.append("<div id='color' class='row'><div class='col'>Color</div></div>");
-  main.append("<div id='resolution' class='row'><div class='col'>Resolution</div></div>");
-  main.append("<div id='price' class='row'><div class='col'>Price</div></div>");
+  function Board(name) {
+    var self = this;
 
-  Phone.prototype.printInfo = function() {
-    $("#brand").append("<div class='col'>" + this.brand + "</div>");
-    $("#color").append("<div class='col'>" + this.color + "</div>");
-    $("#price").append("<div class='col'>" + this.price + "</div>");
-    $("#resolution").append("<div class='col'>" + this.resolution + "</div>");
+    this.id = randomString();
+    this.name = name;
+    this.$element = createBoard();
 
-    console.log("The phone brand is " + this.brand + ", color is " + this.color + " and the price is " + this.price + ".");
-  }
+    function createBoard() {
+      var $board = $('<div>').addClass('board');
+      var $boardTitle = $('<h1>').addClass('board-title').text(self.name);
+      var $boardColumnList = $('<div>').addClass('column-container');
+      var $boardDelete = $('<button>').addClass('btn-delete').html('<i class="fa fa-times" aria-hidden="true"></i>');
+      var $boardAddColumn = $('<button>').addClass('create-column').text('Add a column');
 
-  var GalaxyS6 = new Phone("Samsung", 2500, "black", "1440 x 2560");
-  var iPhone6S = new Phone("Apple", 2250, "silver", "750 x 1334");
-  var iPhone6Splus = new Phone("Apple", 2750, "gold", "1080 x 1920");
-  var OnePlusOne = new Phone("Oneplus", 1800, "black", "1080 x 1920");
-
-  GalaxyS6.printInfo();
-  iPhone6S.printInfo();
-  iPhone6Splus.printInfo();
-  OnePlusOne.printInfo();
-
-// Add button - m11.5
-
-  function Button(text) {
-    this.text = text || 'Hello';
-  }
-
-  Button.prototype = {
-    create: function() {
-      var self = this;
-      this.$element = $('<button>');
-      this.$element.text(this.text);
-      this.$element.click(function() {
-        alert(self.text);
+      $boardDelete.click(function() {
+        self.removeBoard();
       });
-      this.$element.appendTo($('body'));
+
+      $boardAddColumn.click(function() {
+        var name = prompt('Enter a column name');
+        if (name == '') {
+          name = 'No name';
+        };
+        self.addColumn(new Column(name));
+      });
+
+      $board.append($boardTitle)
+            .append($boardDelete)
+            .append($boardAddColumn)
+            .append($boardColumnList);
+
+      return $board;
     }
   }
 
-  var btn1 = new Button('Big button :)');
-  btn1.create();
+  Board.prototype = {
+    addColumn: function(column) {
+      this.$element.children('div').append(column.$element);
+      initSortable();
+      moveColumn();
+    },
+    removeBoard: function() {
+      this.$element.remove();
+    }
+  };
+
+  $('.create-board').click(function() {
+    var name = prompt('Enter a board name');
+    if (name == '') {
+      name = 'No name';
+    };
+    var board = new Board(name);
+    main.addBoard(board);
+  });
+
+  function Column(name) {
+    var self = this;
+
+    this.id = randomString();
+    this.name = name;
+    this.$element = createColumn();
+
+    function createColumn() {
+      var $column = $('<div>').addClass('column');
+      var $columnTitle = $('<h2>').addClass('column-title').text(self.name);
+      var $columnCardList = $('<ul>').addClass('column-card-list');
+      var $columnDelete = $('<button>').addClass('btn-delete').html('<i class="fa fa-times" aria-hidden="true"></i>');
+      var $columnAddCard = $('<button>').addClass('add-card').text('Add a card');
+
+      $columnDelete.click(function() {
+        self.removeColumn();
+      });
+
+      $columnAddCard.click(function() {
+        self.addCard(new Card(prompt("Enter the name of the card")));
+      });
+
+      $column.append($columnTitle)
+              .append($columnDelete)
+              .append($columnAddCard)
+              .append($columnCardList);
+
+      return $column;
+    }
+  }
+
+  Column.prototype = {
+    addCard: function(card) {
+      this.$element.children('ul').append(card.$element);
+    },
+    removeColumn: function() {
+      this.$element.remove();
+    }
+  };
+
+  function Card(description) {
+    var self = this;
+
+    this.id = randomString();
+    this.description = description;
+    this.$element = createCard();
+
+    function createCard() {
+      var $card = $('<li>').addClass('card');
+      var $cardDescription = $('<p>').addClass('card-description').text(self.description);
+      var $cardDelete = $('<button>').addClass('btn-delete').html('<i class="fa fa-times" aria-hidden="true"></i>');
+
+      $cardDelete.click(function() {
+        self.removeCard();
+      });
+
+      $card.append($cardDelete)
+            .append($cardDescription);
+      return $card;
+    }
+  }
+
+  Card.prototype = {
+    removeCard: function() {
+      this.$element.remove();
+    }
+  };
+
+  function initSortable() {
+    $('.column-card-list').sortable({
+      connectWith: '.column-card-list',
+      placeholder: 'card-placeholder'
+    }).disableSelection();
+  }
+
+  function moveColumn() {
+    $('.column-container').sortable({
+      connectWith: '.column-container',
+      placeholder: 'column-placeholder'
+    }).disableSelection();
+  }
+
+  var main = {
+    name: 'Container',
+    addBoard: function(board) {
+      this.$element.append(board.$element);
+    },
+    $element: $('main.container')
+  };
+
+// CREATING BOARD
+  var board = new Board('Kanban board');
+  main.addBoard(board);
+
+// CREATING COLUMNS
+  var todoColumn = new Column('To do');
+  var doingColumn = new Column('Doing');
+  var doneColumn = new Column('Done');
+
+// ADDING COLUMNS TO THE BOARD
+  board.addColumn(todoColumn);
+  board.addColumn(doingColumn);
+  board.addColumn(doneColumn);
+
+// CREATING CARDS
+  var card1 = new Card('New task');
+  var card2 = new Card('Create kanban boards');
+
+// ADDING CARDS TO COLUMNS
+  todoColumn.addCard(card1);
+  doingColumn.addCard(card2);
 
 });

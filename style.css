@@ -1,36 +1,117 @@
+* {
+  box-sizing: border-box;
+}
+
+body {
+  background: #2c3e50;
+  font-size: 14px;
+  margin: 0;
+  padding: 0;
+}
+
 .container {
   font-family: sans-serif;
-  line-height: 2;
   margin: 0 auto;
-  max-width: 800px;
+  max-width: 98%;
+  padding: 2%;
   text-align: center;
 }
 
-.row {
+.board {
+  background: #ecf0f1;
+  margin: 50px 0;
+  padding: 10px 20px 40px;
+  position: relative;
+}
+
+.column-container {
   display: flex;
+  flex-wrap: wrap;
+  justify-content: space-around;
 }
 
-.row:first-of-type,
-.col:first-of-type {
-  font-weight: 700;
-}
-
-.col {
-  border: 1px solid #555;
+.column, .column-placeholder {
+  background: #bdc3c7;
   flex: 1;
+  margin: 30px 2% 0;
+  position: relative;
+  max-width: 350px;
+  min-height: 100px;
+  min-width: 250px;
+}
+
+.column h2 {
+  background: #7f8c8d;
+  color: #ecf0f1;
+  cursor: move;
+  margin-top: 0;
+  padding: 10px;
+}
+
+.column-card-list {
+  min-height: 30px;
+  padding: 0 10px
+}
+
+.card {
+  background: #ecf0f1;
+  cursor: grab;
+  line-height: 20px;
+  list-style: none;
+  position: relative;
+  margin-bottom: 10px;
+  min-height: 30px;
+  padding: 5px 35px 5px 10px;
+  text-align: left;
+}
+
+.card p {
+  margin: 0;
+}
+
+.card-placeholder {
+  border: 2px dotted #555;
+  height: 30px;
+  list-style: none;
+  margin-bottom: 10px;
 }
 
 button {
-  background: orange;
-  border: 5px solid darkorange;
-  color: #fff;
-  display: block;
-  font-size: 3em;
-  margin: 100px auto;
-  padding: 20px 50px;
+  border: none;
+  cursor: pointer;
 }
 
-button:hover {
-  background: darkorange;
-  cursor: pointer;
+.add-card,
+.create-column,
+.create-board {
+  background: #3498db;
+  border-radius: 5px;
+  color: #fff;
+  font-size: 12px;
+  font-weight: 600;
+  padding: 10px 25px;
+  text-transform: uppercase
+}
+
+.add-card:hover,
+.create-column:hover,
+.create-board:hover {
+  background: #2980b9;
+}
+
+.btn-delete {
+  background: none;
+  color: #e74c3c;
+  font-size: 20px;
+  font-weight: 700;
+  line-height: 30px;
+  position: absolute;
+  right: 0;
+  top: 0;
+  width: 30px;
+}
+
+.btn-delete:hover {
+  background: #e74c3c;
+  color: #fff;
 }
